@@ -34,7 +34,7 @@ def tailing(game, player):
     A= game.get_player_location(player)
     B= game.get_player_location(game.get_opponent(player))
 
-    if not A:
+    if not A or not B:
         return 0.0
 
     
@@ -67,7 +67,7 @@ def near_blank(game, player):
     own_moves = len(game.get_legal_moves(player))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))   
     score= float(own_moves - opp_moves)
-#    score= 0
+
     
     blanks= np.array(game.get_blank_spaces())
     A= game.get_player_location(player)
@@ -100,7 +100,7 @@ def combines(game, player):
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))   
     score= float(own_moves - opp_moves)
     
-    if not A:
+    if not A or not B:
         return score
     distance= np.sum([abs(a-b) for a,b in zip(A,B) if abs(a-b) < 3])
     blanks= np.array(game.get_blank_spaces())
@@ -280,8 +280,6 @@ class MinimaxPlayer(IsolationPlayer):
             return best_move
         else:
             best_move= legal_moves[0]
-        if len(game.get_blank_spaces()) == 49:
-            return (random.randint(0, 6), random.randint(0, 6))
         try:
             # The try/except block will automatically catch the exception
             # raised when the timer is about to expire.
@@ -403,7 +401,6 @@ class MinimaxPlayer(IsolationPlayer):
                 best_score= v
                 best_move= m
         return best_move
-        #raise NotImplementedError
 
 
 class AlphaBetaPlayer(IsolationPlayer):
@@ -447,9 +444,6 @@ class AlphaBetaPlayer(IsolationPlayer):
 
         if not game.get_legal_moves():
             return (-1, -1)
-        if len(game.get_blank_spaces()) == 49:
-            # empty board, randomly choose first move
-            return (random.randint(0, 6), random.randint(0, 6))
         depth= 0
         alpha= float('-inf')
         beta= float('inf')
@@ -602,6 +596,4 @@ class AlphaBetaPlayer(IsolationPlayer):
                 best_score= v
                 best_move= m
         return best_move
-        #return (best_score, best_move)
-        # change to return (score, move)
-        #raise NotImplementedError
+
